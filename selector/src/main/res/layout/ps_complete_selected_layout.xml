@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:parentTag="android.widget.RelativeLayout"
+    >
+
+    <com.tap.intl.lib.intl_widget.widget.text.TapText
+        android:id="@+id/ps_tv_select_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ps_select_bottom_title"
+        android:textColor="@color/black_opacity60"
+        android:layout_marginStart="16dp"
+        android:layout_centerVertical="true"
+        style="@style/intl_body_12_regular"
+        />
+
+    <com.tap.intl.lib.intl_widget.widget.button.TapButton
+        android:id="@+id/ps_tv_complete"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        style="@style/TapButton.Medium.Primary"
+        android:layout_gravity="end"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
+        tools:text="Next(12)"
+        />
+
+</RelativeLayout>

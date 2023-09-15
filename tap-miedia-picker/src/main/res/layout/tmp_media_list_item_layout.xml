@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="118dp"
+    android:layout_height="118dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <com.tap.intl.lib.intl_widget.widget.text.TapText
+        android:id="@+id/tv_pick_index"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        style="@style/intl_heading_12_bold"
+        android:textColor="@color/white_primary"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="6dp"
+        android:layout_marginTop="6dp"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

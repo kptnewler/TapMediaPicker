@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black_opacity10"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="center"
+            android:src="@drawable/intl_ico_24_general_close"
+            android:layout_marginStart="16dp"
+            android:layout_centerVertical="true"
+            />
+        
+        <com.tap.intl.lib.intl_widget.widget.text.TapText
+            android:id="@+id/tv_album_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:layout_centerInParent="true"
+            style="@style/intl_body_16_regular"
+            android:textColor="@color/white_primary"
+            android:drawableEnd="@drawable/ico_12_general_drop_down"
+            android:drawablePadding="4dp"
+            tools:text="Recents"
+            />
+        
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintBottom_toTopOf="@+id/rv_preview"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_preview"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        app:layout_constraintBottom_toTopOf="@+id/ll_bottom_operation"
+        android:layout_marginStart="8dp"
+        />
+
+    <RelativeLayout
+        android:id="@+id/ll_bottom_operation"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+        <com.tap.intl.lib.intl_widget.widget.text.TapText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <com.tap.intl.lib.intl_widget.widget.text.TapText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Drag images to sort"
+            android:textColor="@color/black_opacity60"
+            android:layout_marginStart="16dp"
+            android:layout_centerVertical="true"
+            style="@style/intl_body_12_regular"
+            />
+
+        <com.tap.intl.lib.intl_widget.widget.button.TapButton
+            android:id="@+id/bt_next"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            style="@style/TapButton.Medium.Primary"
+            android:layout_gravity="end"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            tools:text="Next(12)"
+            />
+
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
