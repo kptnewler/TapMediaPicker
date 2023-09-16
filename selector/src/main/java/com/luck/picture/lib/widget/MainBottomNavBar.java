@@ -29,6 +29,6 @@ public class MainBottomNavBar extends BottomNavBar {
 
     @Override
     protected void inflateLayout() {
-        inflate(getContext(), R.layout.ps_media_preview_bottom_nav_layout, this);
+        inflate(getContext(), R.layout.ps_media_main_bottom_nav_layout, this);
     }
 }

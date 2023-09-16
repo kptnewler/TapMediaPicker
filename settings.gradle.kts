@@ -18,4 +18,5 @@ rootProject.name = "TapMediaPicker"
 include(":app")
 //include(":tap-miedia-picker")
 include(":ucrop")
-include(":selector")
+include(":tap-selector")
+//include(":tap-miedia-picker")

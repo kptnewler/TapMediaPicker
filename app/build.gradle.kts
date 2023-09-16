@@ -44,9 +44,10 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation(project(":selector"))
+    implementation(project(":tap-selector"))
 
     implementation("io.coil-kt:coil:2.1.0")
     implementation("io.coil-kt:coil-gif:2.1.0")
     implementation("io.coil-kt:coil-video:2.1.0")
+    debugImplementation("com.bytedance.tools.codelocator:codelocator-lancet-all:2.0.3")
 }

@@ -53,7 +53,6 @@ abstract class BaseSelectorFragment : Fragment() {
     abstract fun getFragmentTag(): String
     abstract fun getResourceId(): Int
     open fun isNormalDefaultEnter(): Boolean {
-//        return requireActivity() is SelectorSupporterActivity || requireActivity() is SelectorTransparentActivity
         return false
     }
 
@@ -72,11 +71,6 @@ abstract class BaseSelectorFragment : Fragment() {
      * @param change，If [change] is empty refresh all
      */
     open fun onSelectionResultChange(change: LocalMedia?) {}
-
-    /**
-     * Loading Dialog
-     */
-    private var mLoadingDialog: Dialog? = null
 
     /**
      * tipsDialog
@@ -165,9 +159,6 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun handlePermissionDenied(permission: Array<String>) {
         TempDataProvider.getInstance().currentRequestPermission = permission
-        if (permission.isNotEmpty()) {
-//            SpUtils.putBoolean(requireContext(), permission[0], true)
-        }
         val onPermissionDeniedListener = config.listenerInfo?.onPermissionDeniedListener
         if (onPermissionDeniedListener != null) {
             showPermissionDescription(false, permission)
@@ -217,9 +208,6 @@ abstract class BaseSelectorFragment : Fragment() {
                 }
                 SelectorProviders.destroy()
             } else {
-                // Pop the top state off the back stack. This function is asynchronous
-                // it enqueues the request to pop, but the action will not be performed
-                // until the application returns to its event loop.
                 requireActivity().supportFragmentManager.popBackStack()
             }
         }
@@ -241,11 +229,9 @@ abstract class BaseSelectorFragment : Fragment() {
             viewModel.viewModelScope.launch {
                 val mediaConverterEngine = config.mediaConverterEngine
                 if (mediaConverterEngine != null) {
-                    showLoading()
                     selectResult.forEach { media ->
                         mediaConverterEngine.converter(requireContext(), media)
                     }
-                    dismissLoading()
                 }
 
                 if (config.isActivityResult) {
@@ -284,37 +270,13 @@ abstract class BaseSelectorFragment : Fragment() {
         ) {
             return false
         }
-        if (config.mediaType == MediaType.ALL) {
-            var videoSize = 0
-            var imageSize = 0
-            selectResult.forEach {
-                when {
-                    MediaUtils.hasMimeTypeOfVideo(it.mimeType) -> {
-                        videoSize++
-                    }
-                    MediaUtils.hasMimeTypeOfImage(it.mimeType) -> {
-                        imageSize++
-                    }
-                }
-            }
-            if (config.minSelectNum > 0 && imageSize < config.minSelectNum) {
-//                showTipsDialog(
-//                    getString(
-//                        R.string.ps_min_img_num,
-//                        config.minSelectNum.toString()
-//                    )
-//                )
-                return false
-            }
-        } else {
-            if (config.minSelectNum > 0 && selectResult.size <= 0) {
+        if (config.minSelectNum > 0 && selectResult.size <= 0) {
 //                val msg = getString(
 //                    R.string.ps_min_img_num,
 //                    config.minSelectNum.toString()
 //                )
 //                showTipsDialog(msg)
-                return false
-            }
+            return false
         }
         return true
     }
@@ -323,15 +285,7 @@ abstract class BaseSelectorFragment : Fragment() {
      * Turn on the camera
      */
     open fun openSelectedCamera() {
-        if (config.mediaType == MediaType.ALL) {
-            if (config.allCameraMediaType == MediaType.ALL) {
-                onSelectedOnlyCameraDialog()
-            } else {
-                startCameraAction(config.allCameraMediaType)
-            }
-        } else {
-            startCameraAction(config.mediaType)
-        }
+        startCameraAction(config.mediaType)
     }
 
     /**
@@ -340,11 +294,7 @@ abstract class BaseSelectorFragment : Fragment() {
     open fun startCameraAction(mode: MediaType) {
         val permission = arrayOf(Manifest.permission.CAMERA)
         if (PermissionChecker.checkSelfPermission(requireContext(), permission)) {
-            if (mode == MediaType.VIDEO) {
-//                recordVideo()
-            } else {
-                takePictures()
-            }
+            takePictures()
         } else {
             showPermissionDescription(true, permission)
             val onPermissionApplyListener = config.listenerInfo?.onPermissionApplyListener
@@ -355,11 +305,7 @@ abstract class BaseSelectorFragment : Fragment() {
                     object : OnPermissionResultListener {
                         override fun onGranted() {
                             showPermissionDescription(false, permission)
-                            if (mode == MediaType.VIDEO) {
-//                                recordVideo()
-                            } else {
-                                takePictures()
-                            }
+                            takePictures()
                         }
 
                         override fun onDenied() {
@@ -394,9 +340,6 @@ abstract class BaseSelectorFragment : Fragment() {
         cameraUtils.dispatchCaptureIntent(requireContext(), SelectorConstant.REQUEST_CAMERA, 1)
     }
 
-    /**
-     * [MediaType.ALL] mode, select one option for taking photos and recording videos, pop up the box
-     */
     open fun onSelectedOnlyCameraDialog() {
         startCameraAction(MediaType.IMAGE)
     }
@@ -442,127 +385,13 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun onCheckSelectValidity(media: LocalMedia, isSelected: Boolean): Int {
         val count = getSelectResult().size
-        when (config.mediaType) {
-            MediaType.ALL -> {
-                if (config.isAllWithImageVideo) {
-                    // Support for selecting images and videos
-                    var videoSize = 0
-                    var imageSize = 0
-                    getSelectResult().forEach {
-                        if (MediaUtils.hasMimeTypeOfVideo(it.mimeType)) {
-                            videoSize++
-                        } else if (MediaUtils.hasMimeTypeOfImage(it.mimeType)) {
-                            imageSize++
-                        }
-                    }
-
-                    if (config.isAsTotalCount) {
-                        // The number of maxVideoSelectNum in select all mode is included within maxSelectNum
-                        if (count >= config.totalCount) {
-//                            showTipsDialog(
-//                                getString(
-//                                    R.string.ps_message_max_num,
-//                                    config.totalCount.toString()
-//                                )
-//                            )
-                            return SelectedState.INVALID
-                        }
-                        if (MediaUtils.hasMimeTypeOfVideo(media.mimeType)) {
-                            // If the selected video exceeds the [config.maxVideoSelectNum] limit
-                            if (videoSize >= config.maxVideoSelectNum) {
-//                                showTipsDialog(
-//                                    getString(
-//                                        R.string.ps_message_video_max_num,
-//                                        config.maxVideoSelectNum.toString()
-//                                    )
-//                                )
-                                return SelectedState.INVALID
-                            }
-                        }
-                    } else {
-                        if (MediaUtils.hasMimeTypeOfVideo(media.mimeType)) {
-                            // If the selected video exceeds the [config.maxVideoSelectNum] limit
-                            if (videoSize >= config.maxVideoSelectNum) {
-//                                showTipsDialog(
-//                                    getString(
-//                                        R.string.ps_message_video_max_num,
-//                                        config.maxVideoSelectNum.toString()
-//                                    )
-//                                )
-                                return SelectedState.INVALID
-                            }
-                        } else if (MediaUtils.hasMimeTypeOfImage(media.mimeType)) {
-                            // If the selected image exceeds the [config.maxSelectNum] limit
-                            if (imageSize >= config.totalCount) {
-//                                showTipsDialog(
-//                                    getString(
-//                                        R.string.ps_message_max_num,
-//                                        config.totalCount.toString()
-//                                    )
-//                                )
-                                return SelectedState.INVALID
-                            }
-                        }
-                    }
-                } else {
-                    // Only supports selecting images
-                    if (getSelectResult().isNotEmpty()) {
-                        val first = getSelectResult().first()
-                        if (MediaUtils.hasMimeTypeOfImage(first.mimeType)) {
-                            // Image has been selected
-                            if (MediaUtils.hasMimeTypeOfVideo(media.mimeType)) {
-//                                showTipsDialog(getString(R.string.ps_rule))
-                                return SelectedState.INVALID
-                            }
-                            if (count >= config.totalCount) {
-//                                showTipsDialog(
-//                                    getString(
-//                                        R.string.ps_message_max_num,
-//                                        config.totalCount.toString()
-//                                    )
-//                                )
-                                return SelectedState.INVALID
-                            }
-                        } else if (MediaUtils.hasMimeTypeOfVideo(first.mimeType)) {
-                            // Video has been selected
-                            if (MediaUtils.hasMimeTypeOfImage(media.mimeType)) {
-//                                showTipsDialog(getString(R.string.ps_rule))
-                                return SelectedState.INVALID
-                            }
-                            if (count >= config.totalCount) {
-//                                showTipsDialog(
-//                                    getString(
-//                                        R.string.ps_message_video_max_num,
-//                                        config.totalCount.toString()
-//                                    )
-//                                )
-                                return SelectedState.INVALID
-                            }
-                        }
-                    }
-                }
-            }
-            MediaType.IMAGE -> {
-                if (count >= config.totalCount) {
+        if (count >= config.totalCount) {
 //                    showTipsDialog(
 //                        getString(
 //                            R.string.ps_message_max_num, config.totalCount.toString()
 //                        )
 //                    )
-                    return SelectedState.INVALID
-                }
-            }
-            MediaType.VIDEO -> {
-                if (count >= config.totalCount) {
-//                    showTipsDialog(
-//                        getString(
-//                            R.string.ps_message_video_max_num,
-//                            config.totalCount.toString()
-//                        )
-//                    )
-                    return SelectedState.INVALID
-                }
-            }
+            return SelectedState.INVALID
         }
         return SelectedState.SUCCESS
     }
@@ -756,33 +585,5 @@ abstract class BaseSelectorFragment : Fragment() {
      */
     open fun setOnPermissionResultListener(listener: OnPermissionResultListener?) {
         this.mPermissionResultListener = listener
-    }
-
-    fun showLoading() {
-        try {
-            if (!ActivityCompatHelper.isDestroy(activity)) {
-                mLoadingDialog?.let { dialog ->
-                    if (!dialog.isShowing) {
-                        dialog.show()
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    fun dismissLoading() {
-        try {
-            if (!ActivityCompatHelper.isDestroy(activity)) {
-                mLoadingDialog?.let { dialog ->
-                    if (dialog.isShowing) {
-                        dialog.dismiss()
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 }

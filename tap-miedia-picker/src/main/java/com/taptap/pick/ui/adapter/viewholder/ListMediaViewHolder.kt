@@ -51,9 +51,6 @@ open class ListMediaViewHolder(itemView: View) : BaseListViewHolder(itemView) {
         }
         config.imageEngine?.loadListImage(ivCover.context, media.getAvailablePath(), ivCover)
         tvSelectView.setOnClickListener {
-            if (media.isEnabledMask) {
-                return@setOnClickListener
-            }
             if (media.id == SelectorConstant.INVALID_DATA) {
                 return@setOnClickListener
             }
@@ -72,23 +69,13 @@ open class ListMediaViewHolder(itemView: View) : BaseListViewHolder(itemView) {
             }
         }
 
-        if (config.isMaxSelectEnabledMask && config.selectionMode != SelectionMode.ONLY_SINGLE) {
-            isDisplayMask(media)
-        }
-
         itemView.setOnClickListener {
-            if (media.isEnabledMask) {
-                return@setOnClickListener
-            }
             if (media.id == SelectorConstant.INVALID_DATA) {
                 return@setOnClickListener
             }
             val isPreview = when {
                 MediaUtils.hasMimeTypeOfImage(media.mimeType) -> {
                     config.isEnablePreviewImage
-                }
-                MediaUtils.hasMimeTypeOfVideo(media.mimeType) -> {
-                    config.isEnablePreviewVideo
                 }
                 else -> {
                     false
@@ -113,27 +100,6 @@ open class ListMediaViewHolder(itemView: View) : BaseListViewHolder(itemView) {
             mItemClickListener?.onItemLongClick(v, position, media)
             false
         }
-    }
-
-    private fun isDisplayMask(media: LocalMedia) {
-        var isDisplayMask = false
-        val selectResult = mGetSelectResultListener?.onSelectResult()
-        if (!selectResult.isNullOrEmpty() && !selectResult.contains(media)) {
-            isDisplayMask = if (config.isAllWithImageVideo) {
-                selectResult.size == config.getSelectCount()
-            } else {
-                if (MediaUtils.hasMimeTypeOfVideo(selectResult.first().mimeType)) {
-                    selectResult.size == config.maxVideoSelectNum || MediaUtils.hasMimeTypeOfImage(
-                        media.mimeType
-                    )
-                } else {
-                    selectResult.size == config.totalCount || MediaUtils.hasMimeTypeOfVideo(
-                        media.mimeType
-                    )
-                }
-            }
-        }
-        media.isEnabledMask = isDisplayMask
     }
 
     /**

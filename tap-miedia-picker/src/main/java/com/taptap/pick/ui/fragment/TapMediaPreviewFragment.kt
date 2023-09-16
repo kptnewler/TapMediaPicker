@@ -54,11 +54,10 @@ open class TapMediaPreviewFragment : BaseSelectorFragment() {
     var screenWidth = 0
     var screenHeight = 0
 
-    lateinit var mAdapter: MediaPreviewAdapter
+    private lateinit var mAdapter: MediaPreviewAdapter
 
-    lateinit var binding: TmpMediaPreviewFragmentLayoutBinding
+    private lateinit var binding: TmpMediaPreviewFragmentLayoutBinding
 
-    var isAnimationStart = false
 
     open fun getCurrentAlbum(): LocalMediaAlbum {
         return TempDataProvider.getInstance().currentMediaAlbum

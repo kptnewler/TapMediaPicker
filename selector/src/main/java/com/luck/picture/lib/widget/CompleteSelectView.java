@@ -55,7 +55,7 @@ public class CompleteSelectView extends FrameLayout {
     }
 
     protected void inflateLayout() {
-        LayoutInflater.from(getContext()).inflate(R.layout.ps_complete_selected_layout, this, false);
+        inflate(getContext(), R.layout.ps_complete_selected_layout, this);
     }
 
     /**

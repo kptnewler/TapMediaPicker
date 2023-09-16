@@ -218,24 +218,16 @@ class TapMediaPickFragment: BaseSelectorFragment() {
         if (config.isMaxSelectEnabledMask) {
             val selectResult = getSelectResult()
             val selectCount = selectResult.size
-            if (config.isAllWithImageVideo) {
-                val maxSelectCount = config.getSelectCount()
-                if (config.selectionMode == SelectionMode.MULTIPLE) {
-                    isNotifyAll =
-                        selectCount == maxSelectCount || (!isAddRemove && selectCount == maxSelectCount - 1)
-                }
+            isNotifyAll = if (selectCount == 0 ||
+                (if (isAddRemove) config.mediaType == MediaType.ALL && selectCount == 1
+                else selectCount == config.totalCount - 1)
+            ) {
+                true
             } else {
-                isNotifyAll = if (selectCount == 0 ||
-                    (if (isAddRemove) config.mediaType == MediaType.ALL && selectCount == 1
-                    else selectCount == config.totalCount - 1)
-                ) {
-                    true
+                if (MediaUtils.hasMimeTypeOfVideo(selectResult.first().mimeType)) {
+                    selectResult.size == config.maxVideoSelectNum
                 } else {
-                    if (MediaUtils.hasMimeTypeOfVideo(selectResult.first().mimeType)) {
-                        selectResult.size == config.maxVideoSelectNum
-                    } else {
-                        selectResult.size == config.totalCount
-                    }
+                    selectResult.size == config.totalCount
                 }
             }
         }
@@ -542,19 +534,19 @@ class TapMediaPickFragment: BaseSelectorFragment() {
     ) {
         config.previewWrap =
             onWrapPreviewData(viewModel.page, position, isBottomPreview, source)
-        val factory = ClassFactory.NewInstance()
-        val registry = config.registry
-        val instance = factory.create(registry.get(newPreviewInstance()))
-        val fragmentTag = instance.getFragmentTag()
-        FragmentInjectManager.injectSystemRoomFragment(requireActivity(), fragmentTag, instance)
+//        val factory = ClassFactory.NewInstance()
+//        val registry = config.registry
+//        val instance = factory.create(registry.get(newPreviewInstance()))
+//        val fragmentTag = instance.getFragmentTag()
+//        FragmentInjectManager.injectSystemRoomFragment(requireActivity(), fragmentTag, instance)
     }
 
     /**
      * Users can override this method to configure custom previews fragments
      */
     @Suppress("UNCHECKED_CAST")
-    open fun <F : SelectorPreviewFragment> newPreviewInstance(): Class<F> {
-        return SelectorPreviewFragment::class.java as Class<F>
+    open fun <F : TapMediaPreviewFragment> newPreviewInstance(): Class<F> {
+        return TapMediaPreviewFragment::class.java as Class<F>
     }
 
     /**

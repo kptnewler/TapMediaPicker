@@ -155,7 +155,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (!isAddRemove) {
             sendChangeSubSelectPositionEvent(true);
         }
-        // TODo 添加 list
+        previewMedias = new ArrayList<>(selectorConfig.getSelectedResult());
+        mainBottomNavBar.mGalleryAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -240,7 +241,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
         isMemoryRecycling = savedInstanceState != null;
         tvDataEmpty = view.findViewById(R.id.tv_data_empty);
         mainBottomNavBar = view.findViewById(R.id.mainBottomNavBar);
-        completeSelectView = mainBottomNavBar.completeSelectView;
         titleBar = view.findViewById(R.id.title_bar);
         tvCurrentDataTime = view.findViewById(R.id.tv_current_data_time);
         onCreateLoader();
@@ -278,29 +278,13 @@ public class PictureSelectorFragment extends PictureCommonFragment
      * 完成按钮
      */
     private void initComplete() {
+        completeSelectView = mainBottomNavBar.completeSelectView;
+
         if (selectorConfig.selectionMode == SelectModeConfig.SINGLE && selectorConfig.isDirectReturnSingle) {
             selectorConfig.selectorStyle.getTitleBarStyle().setHideCancelButton(false);
             completeSelectView.setVisibility(View.GONE);
         } else {
             completeSelectView.setSelectedChange(false);
-            SelectMainStyle selectMainStyle = selectorConfig.selectorStyle.getSelectMainStyle();
-            if (selectMainStyle.isCompleteSelectRelativeTop()) {
-                if (completeSelectView.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
-                    ((ConstraintLayout.LayoutParams)
-                            completeSelectView.getLayoutParams()).topToTop = R.id.title_bar;
-                    ((ConstraintLayout.LayoutParams)
-                            completeSelectView.getLayoutParams()).bottomToBottom = R.id.title_bar;
-                    if (selectorConfig.isPreviewFullScreenMode) {
-                        ((ConstraintLayout.LayoutParams) completeSelectView
-                                .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
-                    }
-                } else if (completeSelectView.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
-                    if (selectorConfig.isPreviewFullScreenMode) {
-                        ((RelativeLayout.LayoutParams) completeSelectView
-                                .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
-                    }
-                }
-            }
             completeSelectView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -795,6 +779,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         addRecyclerAction();
 
         previewMedias = new ArrayList<>(selectorConfig.getSelectedResult());
+        mainBottomNavBar.setData(getActivity(), previewMedias, false);
     }
 
 

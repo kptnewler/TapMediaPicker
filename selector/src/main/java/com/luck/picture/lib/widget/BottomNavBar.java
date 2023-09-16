@@ -29,6 +29,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.config.SelectorConfig;
+import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
@@ -73,6 +74,8 @@ public class BottomNavBar extends ConstraintLayout {
     }
 
     protected void init() {
+        config = SelectorProviders.getInstance().getSelectorConfig();
+
         inflateLayout();
         setClickable(true);
         setFocusable(true);

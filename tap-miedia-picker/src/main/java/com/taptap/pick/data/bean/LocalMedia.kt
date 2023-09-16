@@ -32,8 +32,6 @@ data class LocalMedia(
     var compressPath: String? = null,
     var watermarkPath: String? = null,
     var customizeExtra: String? = null,
-    var videoThumbnailPath: String? = null,
-    var isEnabledMask: Boolean = false
 ) : Parcelable {
     fun isCrop(): Boolean {
         return !TextUtils.isEmpty(cropPath)
@@ -123,8 +121,6 @@ data class LocalMedia(
         result = 31 * result + (compressPath?.hashCode() ?: 0)
         result = 31 * result + (watermarkPath?.hashCode() ?: 0)
         result = 31 * result + (customizeExtra?.hashCode() ?: 0)
-        result = 31 * result + (videoThumbnailPath?.hashCode() ?: 0)
-        result = 31 * result + isEnabledMask.hashCode()
         return result
     }
 }

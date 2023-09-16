@@ -149,7 +149,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     protected View selectClickArea;
 
-    protected CompleteSelectView completeSelectView;
 
     protected RecyclerView mGalleryRecycle;
     protected PreviewGalleryAdapter mGalleryAdapter;
@@ -223,7 +222,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     public void onSelectedChange(boolean isAddRemove, LocalMedia currentMedia) {
         // 更新TitleBar和BottomNarBar选择态
         tvSelected.setSelected(selectorConfig.getSelectedResult().contains(currentMedia));
-        completeSelectView.setSelectedChange(true);
         notifySelectNumberStyle(currentMedia);
         notifyPreviewGalleryData(isAddRemove, currentMedia);
     }
@@ -244,14 +242,13 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         tvSelected = view.findViewById(R.id.ps_tv_selected);
         tvSelectedWord = view.findViewById(R.id.ps_tv_selected_word);
         selectClickArea = view.findViewById(R.id.select_click_area);
-        completeSelectView = view.findViewById(R.id.ps_complete_select);
         magicalView = view.findViewById(R.id.magical);
         viewPager = new ViewPager2(getContext());
         bottomNarBar = view.findViewById(R.id.bottom_nar_bar);
         magicalView.setMagicalContent(viewPager);
         setMagicalViewBackgroundColor();
         setMagicalViewAction();
-        addAminViews(titleBar, tvSelected, tvSelectedWord, selectClickArea, completeSelectView, bottomNarBar);
+        addAminViews(titleBar, tvSelected, tvSelectedWord, selectClickArea, bottomNarBar);
         onCreateLoader();
         initTitleBar();
         initViewPagerData(mData);
@@ -642,25 +639,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 layoutParams.rightMargin = selectMainStyle.getPreviewSelectMarginRight();
             }
         }
-        completeSelectView.setCompleteSelectViewStyle();
-        completeSelectView.setSelectedChange(true);
-        if (selectMainStyle.isCompleteSelectRelativeTop()) {
-            if (completeSelectView.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
-                ((ConstraintLayout.LayoutParams) completeSelectView
-                        .getLayoutParams()).topToTop = R.id.title_bar;
-                ((ConstraintLayout.LayoutParams) completeSelectView
-                        .getLayoutParams()).bottomToBottom = R.id.title_bar;
-                if (selectorConfig.isPreviewFullScreenMode) {
-                    ((ConstraintLayout.LayoutParams) completeSelectView
-                            .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
-                }
-            } else if (completeSelectView.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
-                if (selectorConfig.isPreviewFullScreenMode) {
-                    ((RelativeLayout.LayoutParams) completeSelectView
-                            .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
-                }
-            }
-        }
 
         if (selectMainStyle.isPreviewSelectRelativeBottom()) {
             if (tvSelected.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
@@ -690,25 +668,25 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 }
             }
         }
-        completeSelectView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean isComplete;
-                if (selectMainStyle.isCompleteSelectRelativeTop() && selectorConfig.getSelectCount() == 0) {
-                    isComplete = confirmSelect(mData.get(viewPager.getCurrentItem()), false)
-                            == SelectedManager.ADD_SUCCESS;
-                } else {
-                    isComplete = selectorConfig.getSelectCount() > 0;
-                }
-                if (selectorConfig.isEmptyResultReturn && selectorConfig.getSelectCount() == 0) {
-                    onExitPictureSelector();
-                } else {
-                    if (isComplete) {
-                        dispatchTransformResult();
-                    }
-                }
-            }
-        });
+//        completeSelectView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                boolean isComplete;
+//                if (selectMainStyle.isCompleteSelectRelativeTop() && selectorConfig.getSelectCount() == 0) {
+//                    isComplete = confirmSelect(mData.get(viewPager.getCurrentItem()), false)
+//                            == SelectedManager.ADD_SUCCESS;
+//                } else {
+//                    isComplete = selectorConfig.getSelectCount() > 0;
+//                }
+//                if (selectorConfig.isEmptyResultReturn && selectorConfig.getSelectCount() == 0) {
+//                    onExitPictureSelector();
+//                } else {
+//                    if (isComplete) {
+//                        dispatchTransformResult();
+//                    }
+//                }
+//            }
+//        });
     }
 
 
@@ -935,7 +913,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private void externalPreviewStyle() {
         tvSelected.setVisibility(View.GONE);
         bottomNarBar.setVisibility(View.GONE);
-        completeSelectView.setVisibility(View.GONE);
     }
 
     protected PicturePreviewAdapter createAdapter() {

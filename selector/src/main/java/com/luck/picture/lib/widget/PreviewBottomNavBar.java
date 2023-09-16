@@ -36,7 +36,6 @@ public class PreviewBottomNavBar extends BottomNavBar {
     @Override
     protected void init() {
         super.init();
-        config = SelectorProviders.getInstance().getSelectorConfig();
         tvImageEditor = findViewById(R.id.iv_editor);
         tvImageDelete = findViewById(R.id.iv_delete);
 
