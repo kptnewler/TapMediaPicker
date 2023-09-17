@@ -160,6 +160,7 @@ public class TextureViewAttacher implements View.OnTouchListener,
         }
         mBaseRotation = 0.0f;
         // Create Gesture Detectors...
+        if (textureView.getContext() == null) return;
         mScaleDragDetector = new TextureViewGestureDetector(textureView.getContext(), onTextureViewGestureListener);
         mGestureDetector = new GestureDetector(textureView.getContext(), new GestureDetector.SimpleOnGestureListener() {
 

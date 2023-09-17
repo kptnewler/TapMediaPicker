@@ -16,6 +16,7 @@
         android:layout_alignParentEnd="true"
         android:background="@drawable/ps_checkbox_selector"
         android:gravity="center"
+        android:textStyle="bold"
         android:textColor="@color/ps_color_white"
         android:textSize="12sp" />
 

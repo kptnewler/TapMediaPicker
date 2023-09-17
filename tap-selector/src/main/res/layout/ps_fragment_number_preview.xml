@@ -37,10 +37,11 @@
             android:id="@+id/ps_iv_left_back"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ps_ic_white_back"
+            android:scaleType="center"
+            android:src="@drawable/ico_24_top_bars_backward_center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
+            android:paddingStart="12dp"
             app:layout_constraintTop_toBottomOf="@+id/ps_status_bar" />
 
         <com.luck.picture.lib.widget.MarqueeTextView
@@ -62,6 +63,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ps_status_bar"
+            android:visibility="gone"
             tools:text="0/0" />
 
 
@@ -84,32 +86,114 @@
             app:psNormalTextSize="14sp"
             app:psSelectedBackground="@drawable/ps_select_complete_bg"
             app:psSelectedText="@string/ps_send_num"
+            android:visibility="gone"
             app:psSelectedTextColor="@color/ps_color_white"
             app:psSelectedTextSize="14sp" />
+
+        <com.luck.picture.lib.widget.MediumBoldTextView
+            android:id="@+id/ps_tv_selected"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:gravity="center"
+            android:textColor="@color/white_primary"
+            style="@style/intl_heading_12_bold"
+            tools:text="111"
+            app:layout_constraintTop_toTopOf="@+id/ps_iv_left_back"
+            app:layout_constraintBottom_toBottomOf="@+id/ps_iv_left_back"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"
+            />
+
+        <com.tap.intl.lib.intl_widget.widget.button.TapButton
+            android:id="@+id/bt_next"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            style="@style/TapButton.Medium.Primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ps_iv_left_back"
+            app:layout_constraintBottom_toBottomOf="@+id/ps_iv_left_back"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/ps_select_bottom_next"
+            tools:text="Next"
+            android:visibility="gone"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ps_rv_gallery"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ps_preview_gallery_bg"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/ps_bottom_nar_bar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ps_bottom_nar_bar"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@color/ps_color_half_grey"
+        android:layout_height="wrap_content"
+        android:background="#252529"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+    >
+
+        <ImageView
+            android:id="@+id/iv_editor"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ps_ico_16_crop"
+            android:layout_marginEnd="14dp"
+            android:scaleType="center"
+            android:background="@drawable/ps_preview_bottom_bar_bg"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_delete"
+            />
+
+        <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/intl_ico_24_general_delete"
+            android:scaleType="center"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/ps_preview_bottom_bar_bg"
+            />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"
+            app:layout_constraintTop_toBottomOf="@+id/iv_delete"
+            android:layout_marginTop="16dp"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ps_rv_gallery"
+            android:layout_width="0dp"
+            android:layout_height="88dp"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_add"
+            app:layout_constraintTop_toBottomOf="@+id/line"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="16dp"
+            android:paddingTop="20dp"
+            />
+
+        <ImageView
+            android:id="@+id/iv_add"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/intl_ico_24_general_add"
+            android:scaleType="center"
+            app:layout_constraintTop_toTopOf="@+id/ps_rv_gallery"
+            android:layout_marginTop="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/ps_preview_bottom_bar_bg"
+            />
 
 
         <com.luck.picture.lib.widget.MediumBoldTextView
@@ -124,6 +208,7 @@
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
+            android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -142,25 +227,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
-
-
-        <com.luck.picture.lib.widget.MediumBoldTextView
-            android:id="@+id/ps_tv_selected"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="15dp"
-            android:drawableLeft="@drawable/ps_preview_checkbox_selector"
-            android:drawablePadding="5dp"
-            android:gravity="center"
-            android:text="@string/ps_select"
-            android:textColor="@color/ps_color_white"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

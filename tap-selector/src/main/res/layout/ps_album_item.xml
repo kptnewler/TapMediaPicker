@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/ps_item_select_bg"
-    android:padding="6dp">
+    android:background="@color/black_primary"
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/ps_iv_first_cover"
@@ -35,10 +35,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/ps_camera_roll_num"
-        android:textColor="@color/ps_color_4d"
-        android:textSize="16sp"
+        android:textColor="@color/white_primary"
+        android:textSize="14sp"
         app:layout_constraintLeft_toRightOf="@id/ps_iv_first_cover"
         app:layout_constraintTop_toTopOf="@id/ps_iv_first_cover"
+        app:layout_constraintBottom_toBottomOf="@id/ps_iv_first_cover"
         tools:text="Album (999)" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

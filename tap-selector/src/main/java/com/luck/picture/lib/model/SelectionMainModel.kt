@@ -554,6 +554,12 @@ class SelectionMainModel constructor(private var selector: PictureSelector, medi
         return this
     }
 
+    fun setShowNext(showNext: Boolean): SelectionMainModel {
+        this.config.showNext = showNext
+        return this
+    }
+
+
     /**
      * Show white mask
      */
@@ -812,6 +818,11 @@ class SelectionMainModel constructor(private var selector: PictureSelector, medi
      */
     fun setMagicalInterpolator(interpolator: MagicalInterpolator?): SelectionMainModel {
         this.config.magicalInterpolator = interpolator
+        return this
+    }
+
+    fun setSwitchToCropPreview(switchToCropPreview: Boolean): SelectionMainModel {
+        this.config.switchToCropPreview = switchToCropPreview
         return this
     }
 

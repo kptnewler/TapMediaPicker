@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.*
 import com.luck.picture.lib.config.LayoutSource
 import com.luck.picture.lib.config.SelectionMode
@@ -32,6 +33,10 @@ import com.luck.picture.lib.utils.SdkVersionUtils
 import com.luck.picture.lib.utils.StyleUtils.getColorFilter
 import com.luck.picture.lib.widget.HorizontalItemDecoration
 import com.luck.picture.lib.widget.WrapContentLinearLayoutManager
+import com.tap.intl.lib.intl_widget.widget.button.TapButton
+import info.hellovass.kdrawable.shape.KShape
+import info.hellovass.kdrawable.shapeDrawable
+import info.hellovass.kdrawable.stateListDrawable
 import java.util.*
 
 /**
@@ -40,6 +45,11 @@ import java.util.*
  * @describe：SelectorNumPreviewFragment
  */
 open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
+    private lateinit var btNext: TapButton
+    private lateinit var ivDelete: ImageView
+    private lateinit var ivEditor: ImageView
+    private lateinit var ivAdd: ImageView
+    private var currentItemIndex = 0
     override fun getFragmentTag(): String {
         return SelectorNumberPreviewFragment::class.java.simpleName
     }
@@ -83,6 +93,73 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
     @SuppressLint("NotifyDataSetChanged")
     override fun initWidgets() {
         super.initWidgets()
+
+        ivDelete = requireView().findViewById(R.id.iv_delete)
+        ivEditor = requireView().findViewById(R.id.iv_editor)
+        btNext = requireView().findViewById(R.id.bt_next)
+        ivAdd = requireView().findViewById(R.id.iv_add)
+
+        if (config.onlyPreviewWithOutCrop) {
+            mBottomNarBar?.visibility = View.GONE
+            btNext.visibility = View.GONE
+            mTvSelected?.visibility = View.VISIBLE
+        } else {
+            initGalleryRecyclerView()
+            mBottomNarBar?.visibility = View.VISIBLE
+            btNext.visibility = View.VISIBLE
+            mTvSelected?.visibility = View.GONE
+            btNext.setOnClickListener {
+                onConfirmComplete()
+            }
+
+            ivEditor.setOnClickListener {
+                onEditorClick(it)
+            }
+
+            ivDelete.setOnClickListener {
+                val a = confirmSelect(getPreviewWrap().source[viewPager.currentItem], true)
+
+                if (getSelectResult().size <= config.minSelectNum) {
+                    onBackPressed()
+                    return@setOnClickListener
+                }
+                if (a == SelectedState.REMOVE) {
+                    mAdapter.getData().removeAt(viewPager.currentItem)
+                    galleryAdapter?.data?.removeAt(viewPager.currentItem)
+                    currentItemIndex = Math.max(viewPager.currentItem - 1, 0)
+                    mAdapter.notifyItemRemoved(viewPager.currentItem)
+                    viewPager.setCurrentItem(currentItemIndex, false)
+                }
+            }
+
+            ivAdd.setOnClickListener {
+                onBackPressed()
+            }
+
+        }
+
+        mTvSelected?.background = stateListDrawable {
+            selectedState {
+                shapeDrawable {
+                    shape = KShape.Oval
+                    solidColor = ContextCompat.getColor(requireContext(), com.tap.intl.lib.intl_widget.R.color.green_opacity40)
+                }
+            }
+
+            unselectedState {
+                shapeDrawable {
+                    solidColor = ContextCompat.getColor(requireContext(), com.tap.intl.lib.intl_widget.R.color.overlay)
+                    shape = KShape.Oval
+                    stroke {
+                        width = DensityUtil.dip2px(requireContext(), 1f)
+                        color = ContextCompat.getColor(requireContext(), com.tap.intl.lib.intl_widget.R.color.white_primary)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun initGalleryRecyclerView() {
         (rvGallery.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         rvGallery.addItemDecoration(
             HorizontalItemDecoration(Integer.MAX_VALUE, DensityUtil.dip2px(requireContext(), 6F))
@@ -310,6 +387,8 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
                 onSelectResultSort()
             }
         }
+
+        change?.let { updateCurSelectedPos(it) }
     }
 
     open fun onSelectResultSort() {
@@ -364,6 +443,16 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
         if (newPosition >= 0) {
             galleryAdapter?.notifyItemChanged(newPosition)
         }
+        updateCurSelectedPos(media)
+    }
+
+    private fun updateCurSelectedPos(media: LocalMedia) {
+        val pos = getSelectResult().indexOf(media)
+        mTvSelected?.text = if (pos >= 0) {
+            (pos + 1).toString()
+        } else {
+            ""
+        }
     }
 
     private class GalleryAdapter(
@@ -375,13 +464,27 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
         var currentMedia: LocalMedia? = null
         var selectResult: MutableList<LocalMedia>? = null
 
+        fun clearAddAll(data: List<LocalMedia>) {
+            this.data.clear()
+            this.data.addAll(data)
+            notifyDataSetChanged()
+        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryViewHolder {
             val resource = config.layoutSource[LayoutSource.SELECTOR_NUMBER_PREVIEW_GALLERY]
                 ?: R.layout.ps_preview_gallery_item
             return GalleryViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(resource, parent, false)
-            )
+            ).apply {
+                viewBorder.background = shapeDrawable {
+                    cornerRadius = DensityUtil.dip2px(parent.context, 4f).toFloat()
+                    stroke {
+                        width = DensityUtil.dip2px(parent.context, 2f)
+                        color = ContextCompat.getColor(parent.context, com.tap.intl.lib.intl_widget.R.color.green_primary)
+                    }
+                }
+            }
         }
 
         override fun onBindViewHolder(holder: GalleryViewHolder, position: Int) {
@@ -404,10 +507,13 @@ open class SelectorNumberPreviewFragment : SelectorPreviewFragment() {
             if (MediaUtils.hasMimeTypeOfAudio(media.mimeType)) {
                 holder.ivCover.setImageResource(R.drawable.ps_audio_placeholder)
             } else {
-                config.imageEngine?.loadListImage(
-                    holder.ivCover.context,
+                config.imageEngine?.loadRoundImage(
+                    holder.itemView.context,
                     media.getAvailablePath(),
-                    holder.ivCover
+                    DensityUtil.dip2px(holder.itemView.context, 40f),
+                    DensityUtil.dip2px(holder.itemView.context, 40f),
+                    holder.ivCover,
+                    DensityUtil.dip2px(holder.itemView.context, 4f).toFloat()
                 )
             }
             holder.itemView.setOnClickListener {

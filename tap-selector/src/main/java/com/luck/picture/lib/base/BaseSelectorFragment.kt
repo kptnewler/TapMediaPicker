@@ -312,18 +312,23 @@ abstract class BaseSelectorFragment : Fragment() {
                 } else {
                     config.mListenerInfo.onResultCallbackListener?.onResult(selectResult)
                 }
-                if (!isStateSaved) {
-                    if (isNormalDefaultEnter()) {
-                        requireActivity().finish()
-                    } else {
-                        requireActivity().supportFragmentManager.fragments.forEach { _ ->
-                            requireActivity().supportFragmentManager.popBackStack()
-                        }
-                    }
-                }
-                SelectorProviders.getInstance().destroy()
+
+                backToMain()
             }
         }
+    }
+
+    protected fun backToMain() {
+        if (!isStateSaved) {
+            if (isNormalDefaultEnter()) {
+                requireActivity().finish()
+            } else {
+                requireActivity().supportFragmentManager.fragments.forEach { _ ->
+                    requireActivity().supportFragmentManager.popBackStack()
+                }
+            }
+        }
+        SelectorProviders.getInstance().destroy()
     }
 
     /**

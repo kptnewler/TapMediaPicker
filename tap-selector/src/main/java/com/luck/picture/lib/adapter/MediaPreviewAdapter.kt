@@ -37,6 +37,12 @@ open class MediaPreviewAdapter : RecyclerView.Adapter<BasePreviewMediaHolder>() 
         this.notifyItemRangeChanged(0, mData.size)
     }
 
+    fun clearAndAll(data: List<LocalMedia>) {
+        mData.clear()
+        mData.addAll(data)
+        this.notifyItemRangeChanged(0, mData.size)
+    }
+
     /**
      * User can rewrite to realize user-defined requirements
      */

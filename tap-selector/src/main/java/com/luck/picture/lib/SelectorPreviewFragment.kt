@@ -209,11 +209,13 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
     }
 
     open fun initNavbarBar() {
-        val media = getPreviewWrap().source[getPreviewWrap().position]
-        mTvEditor?.visibility =
-            if (!MediaUtils.hasMimeTypeOfAudio(media.mimeType) && config.mListenerInfo.onEditorMediaListener != null) View.VISIBLE else View.GONE
-        mTvEditor?.setOnClickListener {
-            onEditorClick(it)
+        if (getPreviewWrap().source.isNotEmpty()) {
+            val media = getPreviewWrap().source[getPreviewWrap().position]
+            mTvEditor?.visibility =
+                if (!MediaUtils.hasMimeTypeOfAudio(media.mimeType) && config.mListenerInfo.onEditorMediaListener != null) View.VISIBLE else View.GONE
+            mTvEditor?.setOnClickListener {
+                onEditorClick(it)
+            }
         }
         mTvOriginal?.visibility =
             if (config.isOriginalControl) View.VISIBLE else View.GONE
@@ -233,7 +235,7 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
         if (isHasMagicalEffect()) {
             mMagicalView?.backToMin()
         } else {
-            onBackPressed()
+            previewBack()
         }
     }
 
@@ -327,8 +329,16 @@ open class SelectorPreviewFragment : BaseSelectorFragment() {
                 mMagicalView?.backToMin()
             }
             else -> {
-                onBackPressed()
+                previewBack()
             }
+        }
+    }
+
+    private fun previewBack() {
+        if (config.switchToCropPreview && !config.onlyPreviewWithOutCrop) {
+            backToMain()
+        } else {
+            onBackPressed()
         }
     }
 

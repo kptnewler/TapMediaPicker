@@ -4,8 +4,8 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
-import androidx.appcompat.widget.AppCompatTextView
 import com.luck.picture.lib.R
+import com.tap.intl.lib.intl_widget.widget.text.TapText
 
 /**
  * @author：luck
@@ -16,9 +16,9 @@ open class MediumBoldTextView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : AppCompatTextView(context, attrs, defStyleAttr) {
+) : TapText(context, attrs, defStyleAttr) {
     private var mStrokeWidth = 0.6f
-    override fun onDraw(canvas: Canvas) {
+    override fun onDraw(canvas: Canvas?) {
         val paint = paint
         if (paint.strokeWidth != mStrokeWidth) {
             paint.strokeWidth = mStrokeWidth

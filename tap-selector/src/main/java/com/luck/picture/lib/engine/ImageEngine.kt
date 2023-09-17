@@ -29,6 +29,8 @@ interface ImageEngine {
      */
     fun loadImage(context: Context, url: String?, width: Int, height: Int, imageView: ImageView)
 
+    fun loadRoundImage(context: Context, url: String?, width: Int, height: Int, imageView: ImageView, round: Float) {}
+
     /**
      * Load album list thumbnails
      *

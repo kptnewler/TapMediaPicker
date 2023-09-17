@@ -87,6 +87,12 @@ class SelectorConfig {
     var mediaConverterEngine: MediaConverterEngine? = null
     var magicalInterpolator: MagicalInterpolator? = null
     var mListenerInfo = ListenerInfo()
+    // 纯预览页面
+    var onlyPreviewWithOutCrop: Boolean = false
+    // 完成还是下一步
+    var showNext: Boolean = true
+    // 跳转主界面
+    var switchToCropPreview = false
 
     fun getSelectCount(): Int {
         return if (isAsTotalCount) totalCount else totalCount + maxVideoSelectNum
@@ -155,6 +161,7 @@ class SelectorConfig {
         this.imageOutputDir = null
         this.videoOutputDir = null
         this.audioOutputDir = null
+        this.onlyPreviewWithOutCrop = false
     }
 
     fun destroy() {

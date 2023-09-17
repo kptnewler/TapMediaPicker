@@ -45,6 +45,9 @@ import java.io.File
  * @describe：PictureSelector default template style
  */
 
+// TODO 单独启动预览裁剪界面，接受指定参数
+// TODO 参数层层透传
+// TODO 裁剪页面 UI 调整
 open class SelectorMainFragment : BaseSelectorFragment() {
     override fun getFragmentTag(): String {
         return SelectorMainFragment::class.java.simpleName
@@ -215,7 +218,19 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     }
 
     open fun onBackClick(v: View) {
-        onBackPressed()
+        if (config.switchToCropPreview) {
+            onStartPreview(0, true, getSelectResult())
+        } else {
+            onBackPressed()
+        }
+    }
+
+    override fun onKeyBackAction() {
+        if (config.switchToCropPreview) {
+            onStartPreview(0, true, getSelectResult())
+        } else {
+            onBackPressed()
+        }
     }
 
     open fun onShowAlbumWindowAsDropDown() {
@@ -534,7 +549,7 @@ open class SelectorMainFragment : BaseSelectorFragment() {
                     val statusBarHeight = getStatusBarHeight(requireContext())
                     RecycleItemViewParams.build(mRecycler, if (isFullScreen) 0 else statusBarHeight)
                 }
-                onStartPreview(position, false, mAdapter.getData())
+                onStartPreview(position, false, mAdapter.getData(), true)
             }
 
             override fun onComplete(isSelected: Boolean, position: Int, media: LocalMedia) {
@@ -858,10 +873,12 @@ open class SelectorMainFragment : BaseSelectorFragment() {
     open fun onStartPreview(
         position: Int,
         isBottomPreview: Boolean,
-        source: MutableList<LocalMedia>
+        source: MutableList<LocalMedia>,
+        isOnlyPreview: Boolean = false
     ) {
         config.previewWrap =
             onWrapPreviewData(viewModel.page, position, isBottomPreview, source)
+        config.onlyPreviewWithOutCrop = isOnlyPreview
         val factory = ClassFactory.NewInstance()
         val registry = config.registry
         val instance = factory.create(registry.get(newPreviewInstance()))

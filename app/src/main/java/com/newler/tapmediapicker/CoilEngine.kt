@@ -6,7 +6,7 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import com.luck.picture.lib.engine.ImageEngine
-import com.luck.picture.lib.utils.ActivityCompatHelper
+import com.luck.picture.lib.helper.ActivityCompatHelper
 
 /**
  * @author：luck
@@ -14,10 +14,7 @@ import com.luck.picture.lib.utils.ActivityCompatHelper
  * @describe：CoilEngine
  */
 class CoilEngine : ImageEngine {
-    override fun loadImage(context: Context, url: String, imageView: ImageView) {
-        if (!ActivityCompatHelper.assertValidRequest(context)) {
-            return
-        }
+    override fun loadImage(context: Context, url: String?, imageView: ImageView) {
         val target = ImageRequest.Builder(context)
             .data(url)
             .target(imageView)
@@ -26,30 +23,43 @@ class CoilEngine : ImageEngine {
     }
 
     override fun loadImage(
-        context: Context?,
-        imageView: ImageView?,
+        context: Context,
         url: String?,
-        maxWidth: Int,
-        maxHeight: Int
+        width: Int,
+        height: Int,
+        imageView: ImageView
     ) {
-        if (!ActivityCompatHelper.assertValidRequest(context)) {
-            return
-        }
-        context?.let {
+        context.let {
             val builder = ImageRequest.Builder(it)
-            if (maxWidth > 0 && maxHeight > 0) {
-                builder.size(maxWidth, maxHeight)
+            if (width > 0 && height > 0) {
+                builder.size(width, height)
             }
-            imageView?.let { v -> builder.data(url).target(v) }
+            imageView.let { v -> builder.data(url).target(v) }
             val request = builder.build();
             context.imageLoader.enqueue(request)
         }
     }
 
-    override fun loadAlbumCover(context: Context, url: String, imageView: ImageView) {
-        if (!ActivityCompatHelper.assertValidRequest(context)) {
-            return
+    override fun loadRoundImage(
+        context: Context,
+        url: String?,
+        width: Int,
+        height: Int,
+        imageView: ImageView,
+        round: Float
+    ) {
+        context.let {
+            val builder = ImageRequest.Builder(it).transformations(RoundedCornersTransformation(round))
+            if (width > 0 && height > 0) {
+                builder.size(width, height)
+            }
+            imageView.let { v -> builder.data(url).target(v) }
+            val request = builder.build();
+            context.imageLoader.enqueue(request)
         }
+    }
+
+    override fun loadAlbumCover(context: Context, url: String?, imageView: ImageView) {
         imageView.scaleType = ImageView.ScaleType.CENTER_CROP
         val target = ImageRequest.Builder(context)
             .data(url)
@@ -60,7 +70,7 @@ class CoilEngine : ImageEngine {
         context.imageLoader.enqueue(target)
     }
 
-    override fun loadGridImage(context: Context, url: String, imageView: ImageView) {
+    override fun loadListImage(context: Context, url: String?, imageView: ImageView) {
         if (!ActivityCompatHelper.assertValidRequest(context)) {
             return
         }
@@ -73,12 +83,12 @@ class CoilEngine : ImageEngine {
         context.imageLoader.enqueue(target)
     }
 
-
-    override fun pauseRequests(context: Context?) {
-
+    override fun pauseRequests(context: Context) {
     }
 
-    override fun resumeRequests(context: Context?) {
-
+    override fun resumeRequests(context: Context) {
     }
+
+
+
 }
