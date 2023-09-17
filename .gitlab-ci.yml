@@ -1,0 +1,21 @@
+image: registry.tapsvc.com/public/android-taptap-ci:v1.1.2
+
+before_script:
+  - export GRADLE_USER_HOME=$PWD/.gradle
+
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+stages:
+  - publish
+
+publishArtifact:
+  stage: publish
+  only:
+      - master
+      - /^dev_*/
+  script:
+    - ./gradlew :tap-selector:publishReleasePublicationToMavenRepository
+    - ./gradlew :ucrop:publishReleasePublicationToMavenRepository
